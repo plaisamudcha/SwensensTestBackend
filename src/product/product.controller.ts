@@ -1,7 +1,8 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { SuccessResponse } from 'src/types/response.type';
 import { Product } from 'generated/prisma/wasm';
+import { CreateProductDto } from './dtos/product.dto';
 
 @Controller('product')
 export class ProductController {
@@ -27,6 +28,18 @@ export class ProductController {
       success: true,
       data: product,
       message: 'Product retrieved successfully'
+    };
+  }
+
+  @Post()
+  async createProduct(
+    @Body() body: CreateProductDto
+  ): Promise<SuccessResponse<Product>> {
+    const product = await this.productService.createProduct(body);
+    return {
+      success: true,
+      data: product,
+      message: 'Product created successfully'
     };
   }
 }

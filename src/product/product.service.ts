@@ -4,6 +4,7 @@ import { PrismaClientKnownRequestError } from 'generated/prisma/runtime/library'
 import { invalidUUIDException } from 'src/common/exceptions/invalidUUID.exception';
 import { ProductNotFoundException } from 'src/common/exceptions/productNotFound.exception';
 import { PrismaService } from 'src/database/prisma.service';
+import { CreateProductDto } from './dtos/product.dto';
 
 @Injectable()
 export class ProductService {
@@ -40,5 +41,11 @@ export class ProductService {
       }
       throw err;
     }
+  }
+
+  async createProduct(data: CreateProductDto): Promise<Product> {
+    return this.prismaService.product.create({
+      data
+    });
   }
 }
