@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post
+} from '@nestjs/common';
 import { ProductService } from './product.service';
 import { MessageResponse, SuccessResponse } from 'src/types/response.type';
 import { Product, PromotionProduct } from 'generated/prisma/wasm';
@@ -71,6 +79,11 @@ export class ProductController {
     return await this.productService.updateProduct(id, body);
   }
 
+  @Delete(':id')
+  async deleteProduct(@Param('id') id: string): Promise<MessageResponse> {
+    return await this.productService.deleteProduct(id);
+  }
+
   @Post('promotion')
   async createPromotionProduct(
     @Body() body: CreatePromotionProductDto
@@ -93,5 +106,12 @@ export class ProductController {
       return { message: 'No fields to update or no valid data provided' };
     }
     return await this.productService.updatePromotionProduct(id, body);
+  }
+
+  @Delete('promotion/:id')
+  async deletePromotionProduct(
+    @Param('id') id: string
+  ): Promise<MessageResponse> {
+    return await this.productService.deletePromotionProduct(id);
   }
 }

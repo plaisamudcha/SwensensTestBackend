@@ -88,6 +88,32 @@ export class ProductService {
     }
   }
 
+  async deleteProduct(id: string): Promise<MessageResponse> {
+    try {
+      await this.prismaService.product.delete({
+        where: { id }
+      });
+      return { message: 'Product deleted successfully' };
+    } catch (err) {
+      // if string not uuid format, prisma throws error
+      if (
+        err instanceof PrismaClientKnownRequestError &&
+        err.code === 'P2023'
+      ) {
+        throw new invalidUUIDException();
+      }
+
+      // if product not found, prisma throws error
+      if (
+        err instanceof PrismaClientKnownRequestError &&
+        err.code === 'P2025'
+      ) {
+        throw new ProductNotFoundException();
+      }
+      throw err;
+    }
+  }
+
   async createPromotionProduct(
     data: CreatePromotionProductDto
   ): Promise<PromotionProduct> {
@@ -116,6 +142,30 @@ export class ProductService {
       }
 
       // if product not found, prisma throws error
+      if (
+        err instanceof PrismaClientKnownRequestError &&
+        err.code === 'P2025'
+      ) {
+        throw new ProductNotFoundException();
+      }
+      throw err;
+    }
+  }
+
+  async deletePromotionProduct(id: string): Promise<MessageResponse> {
+    try {
+      await this.prismaService.promotionProduct.delete({
+        where: { id }
+      });
+      return { message: 'Promotion product deleted successfully' };
+    } catch (err) {
+      if (
+        err instanceof PrismaClientKnownRequestError &&
+        err.code === 'P2023'
+      ) {
+        throw new invalidUUIDException();
+      }
+
       if (
         err instanceof PrismaClientKnownRequestError &&
         err.code === 'P2025'
