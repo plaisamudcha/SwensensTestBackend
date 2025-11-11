@@ -6,4 +6,10 @@ export const baseSchema = z.object({
   DATABASE_URL: z.url()
 });
 
+export const jwtSchema = z.object({
+  ACCESS_JWT_SECRET: z.string().min(32),
+  ACCESS_JWT_TTL: z.coerce.number().int().positive()
+});
+
 export type Baseconfig = z.infer<typeof baseSchema>;
+export type JwtConfig = z.infer<typeof jwtSchema>;

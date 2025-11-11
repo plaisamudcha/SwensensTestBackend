@@ -1,7 +1,7 @@
 import z from 'zod';
-import { baseSchema } from './base.schema';
+import { baseSchema, jwtSchema } from './base.schema';
 
-export const envSchema = baseSchema;
+export const envSchema = baseSchema.and(jwtSchema);
 
 export type EnvConfig = z.infer<typeof envSchema>;
 
