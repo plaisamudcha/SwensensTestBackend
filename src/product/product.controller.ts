@@ -3,7 +3,10 @@ import { ProductService } from './product.service';
 import { MessageResponse, SuccessResponse } from 'src/types/response.type';
 import { Product, PromotionProduct } from 'generated/prisma/wasm';
 import { CreateProductDto, UpdateProductDto } from './dtos/product.dto';
-import { CreatePromotionProductDto } from './dtos/promotion-product.dto';
+import {
+  CreatePromotionProductDto,
+  UpdatePromotionProductDto
+} from './dtos/promotion-product.dto';
 
 @Controller('product')
 export class ProductController {
@@ -63,7 +66,7 @@ export class ProductController {
     @Body() body: UpdateProductDto
   ): Promise<MessageResponse> {
     if (Object.keys(body).length === 0) {
-      return { message: 'No fields to update' };
+      return { message: 'No fields to update or no valid data provided' };
     }
     return await this.productService.updateProduct(id, body);
   }
@@ -79,5 +82,16 @@ export class ProductController {
       data: promotionProduct,
       message: 'Promotion product created successfully'
     };
+  }
+
+  @Patch('promotion/:id')
+  async updatePromotionProduct(
+    @Param('id') id: string,
+    @Body() body: UpdatePromotionProductDto
+  ): Promise<MessageResponse> {
+    if (Object.keys(body).length === 0) {
+      return { message: 'No fields to update or no valid data provided' };
+    }
+    return await this.productService.updatePromotionProduct(id, body);
   }
 }
