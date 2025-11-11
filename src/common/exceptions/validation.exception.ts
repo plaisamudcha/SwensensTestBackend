@@ -1,5 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
-import { BaseHttpException } from '../exceptions/base-http.exception';
+import { BaseHttpException } from './base-http.exception';
 import { ERROR_CODE, ErrorCode } from '../constants/error-code.constant';
 
 export class ValidationException extends BaseHttpException {

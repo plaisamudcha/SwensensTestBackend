@@ -1,4 +1,5 @@
 import { ValidationError, ValidationPipe } from '@nestjs/common';
+import { ValidationException } from '../exceptions/validation.exception';
 
 export class GlobalValidationPipe extends ValidationPipe {
   constructor() {
@@ -10,6 +11,7 @@ export class GlobalValidationPipe extends ValidationPipe {
         errors.forEach((err) => {
           details[err.property] = Object.values(err.constraints ?? {});
         });
+        throw new ValidationException(details);
       }
     });
   }
