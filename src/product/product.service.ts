@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { Product } from 'generated/prisma';
+import { Product, PromotionProduct } from 'generated/prisma';
 import { PrismaClientKnownRequestError } from 'generated/prisma/runtime/library';
 import { invalidUUIDException } from 'src/common/exceptions/invalidUUID.exception';
 import { ProductNotFoundException } from 'src/common/exceptions/productNotFound.exception';
 import { PrismaService } from 'src/database/prisma.service';
 import { CreateProductDto } from './dtos/product.dto';
+import { CreatePromotionProductDto } from './dtos/promotion-product.dto';
 
 @Injectable()
 export class ProductService {
@@ -12,6 +13,10 @@ export class ProductService {
 
   async findAllProducts(): Promise<Product[]> {
     return this.prismaService.product.findMany();
+  }
+
+  async findAllPromotionProducts(): Promise<PromotionProduct[]> {
+    return this.prismaService.promotionProduct.findMany();
   }
 
   async findProductById(id: string): Promise<Product | null> {
@@ -45,6 +50,14 @@ export class ProductService {
 
   async createProduct(data: CreateProductDto): Promise<Product> {
     return this.prismaService.product.create({
+      data
+    });
+  }
+
+  async createPromotionProduct(
+    data: CreatePromotionProductDto
+  ): Promise<PromotionProduct> {
+    return this.prismaService.promotionProduct.create({
       data
     });
   }
