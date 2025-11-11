@@ -4,8 +4,9 @@ import { PrismaClientKnownRequestError } from 'generated/prisma/runtime/library'
 import { invalidUUIDException } from 'src/common/exceptions/invalidUUID.exception';
 import { ProductNotFoundException } from 'src/common/exceptions/productNotFound.exception';
 import { PrismaService } from 'src/database/prisma.service';
-import { CreateProductDto } from './dtos/product.dto';
+import { CreateProductDto, UpdateProductDto } from './dtos/product.dto';
 import { CreatePromotionProductDto } from './dtos/promotion-product.dto';
+import { MessageResponse } from 'src/types/response.type';
 
 @Injectable()
 export class ProductService {
@@ -52,6 +53,36 @@ export class ProductService {
     return this.prismaService.product.create({
       data
     });
+  }
+
+  async updateProduct(
+    id: string,
+    data: UpdateProductDto
+  ): Promise<MessageResponse> {
+    try {
+      await this.prismaService.product.update({
+        where: { id },
+        data
+      });
+      return { message: 'Product updated successfully' };
+    } catch (err) {
+      // if string not uuid format, prisma throws error
+      if (
+        err instanceof PrismaClientKnownRequestError &&
+        err.code === 'P2023'
+      ) {
+        throw new invalidUUIDException();
+      }
+
+      // if product not found, prisma throws error
+      if (
+        err instanceof PrismaClientKnownRequestError &&
+        err.code === 'P2025'
+      ) {
+        throw new ProductNotFoundException();
+      }
+      throw err;
+    }
   }
 
   async createPromotionProduct(

@@ -1,8 +1,8 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { ProductService } from './product.service';
-import { SuccessResponse } from 'src/types/response.type';
+import { MessageResponse, SuccessResponse } from 'src/types/response.type';
 import { Product, PromotionProduct } from 'generated/prisma/wasm';
-import { CreateProductDto } from './dtos/product.dto';
+import { CreateProductDto, UpdateProductDto } from './dtos/product.dto';
 import { CreatePromotionProductDto } from './dtos/promotion-product.dto';
 
 @Controller('product')
@@ -55,6 +55,17 @@ export class ProductController {
       data: product,
       message: 'Product created successfully'
     };
+  }
+
+  @Patch(':id')
+  async updateProduct(
+    @Param('id') id: string,
+    @Body() body: UpdateProductDto
+  ): Promise<MessageResponse> {
+    if (Object.keys(body).length === 0) {
+      return { message: 'No fields to update' };
+    }
+    return await this.productService.updateProduct(id, body);
   }
 
   @Post('promotion')
