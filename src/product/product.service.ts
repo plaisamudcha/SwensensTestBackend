@@ -29,7 +29,7 @@ export class ProductService {
         where: { id }
       });
       if (!product) {
-        throw new ProductNotFoundException(`Product with id ${id} not found`);
+        throw new ProductNotFoundException();
       }
       return product;
     } catch (err) {
@@ -39,14 +39,6 @@ export class ProductService {
         err.code === 'P2023'
       ) {
         throw new invalidUUIDException();
-      }
-
-      // if product not found, prisma throws error
-      if (
-        err instanceof PrismaClientKnownRequestError &&
-        err.code === 'P2025'
-      ) {
-        throw new ProductNotFoundException();
       }
       throw err;
     }

@@ -1,7 +1,7 @@
 import z from 'zod';
-import { baseSchema, jwtSchema } from './base.schema';
+import { baseSchema, jwtSchema, thaiBulkSmsSchema } from './base.schema';
 
-export const envSchema = baseSchema.and(jwtSchema);
+export const envSchema = baseSchema.and(jwtSchema).and(thaiBulkSmsSchema);
 
 export type EnvConfig = z.infer<typeof envSchema>;
 

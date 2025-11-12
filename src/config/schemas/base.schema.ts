@@ -11,5 +11,11 @@ export const jwtSchema = z.object({
   ACCESS_JWT_TTL: z.coerce.number().int().positive()
 });
 
+export const thaiBulkSmsSchema = z.object({
+  THAIBULKSMS_API_KEY: z.string().min(1),
+  THAIBULKSMS_SECRET_KEY: z.string().min(1)
+});
+
 export type Baseconfig = z.infer<typeof baseSchema>;
 export type JwtConfig = z.infer<typeof jwtSchema>;
+export type ThaiBulkSmsConfig = z.infer<typeof thaiBulkSmsSchema>;
