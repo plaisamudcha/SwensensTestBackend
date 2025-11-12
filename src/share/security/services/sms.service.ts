@@ -3,17 +3,17 @@ import axios from 'axios';
 import { OtpConfigService } from 'src/config/services/otp-config.service';
 import { MessageResponse } from 'src/types/response.type';
 
-type SmsResponse = {
-  remaining_credit: number;
-  total_use_credit: number;
-  credit_type: string;
-  phone_number_list: Array<{
-    number: string;
-    message_id: string;
-    used_credit: number;
-  }>;
-  bad_phone_number_list: string[];
-};
+// type SmsResponse = {
+//   remaining_credit: number;
+//   total_use_credit: number;
+//   credit_type: string;
+//   phone_number_list: Array<{
+//     number: string;
+//     message_id: string;
+//     used_credit: number;
+//   }>;
+//   bad_phone_number_list: string[];
+// };
 
 @Injectable()
 export class SmsService {
@@ -26,29 +26,20 @@ export class SmsService {
     try {
       const params = new URLSearchParams({
         msisdn: phoneNumber,
-        message: `Your OTP code is: ${otpCode}`
+        message: `เห็นข้อความนี้ไม่ต้องตกใจ ปายเอง Your OTP code is: ${otpCode}`
       });
 
-      const response: SmsResponse = await axios.post(
-        'https://api-v2.thaibulksms.com/sms',
-        params,
-        {
-          auth: {
-            username: this.otpConfigService.accessThaiBulkSmsApiKey,
-            password: this.otpConfigService.accessThaiBulkSmsSecretKey
-          },
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          }
+      await axios.post('https://api-v2.thaibulksms.com/sms', params, {
+        auth: {
+          username: this.otpConfigService.accessThaiBulkSmsApiKey,
+          password: this.otpConfigService.accessThaiBulkSmsSecretKey
+        },
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
         }
-      );
+      });
 
-      // ตรวจสอบว่าส่งสำเร็จ
-      if (response.phone_number_list?.length > 0) {
-        return { message: 'OTP sent successfully' };
-      }
-
-      throw new Error('Failed to send SMS to phone number');
+      return { message: 'OTP sent successfully' };
     } catch (err) {
       // Log error details
       if (axios.isAxiosError(err)) {

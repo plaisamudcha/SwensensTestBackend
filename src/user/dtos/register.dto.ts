@@ -46,7 +46,7 @@ export class RegisterDto {
   @IsEnum(GENDER_USERS)
   gender: GenderUser;
 
-  @IsNotEmpty()
   @IsEnum(ROLE_USERS)
-  role: RoleUser;
+  @IsOptional()
+  role?: RoleUser;
 }
