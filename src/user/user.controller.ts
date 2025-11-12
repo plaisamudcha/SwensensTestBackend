@@ -3,6 +3,7 @@ import { UserService } from './user.service';
 import { RegisterDto } from './dtos/register.dto';
 import { MessageResponse, SuccessResponse } from 'src/types/response.type';
 import { User } from 'generated/prisma';
+import { LoginPhoneDto, VerifyOtpDto } from './dtos/login-phone.dto';
 
 @Controller('user')
 export class UserController {
@@ -33,5 +34,22 @@ export class UserController {
   @Post('register')
   async register(@Body() body: RegisterDto): Promise<MessageResponse> {
     return this.userService.createUser(body);
+  }
+
+  @Post('send-otp')
+  async sendOtp(@Body() body: LoginPhoneDto): Promise<MessageResponse> {
+    return this.userService.sendOtpToUser(body.telephone);
+  }
+
+  @Post('verify-otp')
+  async verifyOtp(@Body() body: VerifyOtpDto): Promise<MessageResponse> {
+    const { telephone, otpCode } = body;
+    const isValid = await this.userService.verifyUserOtp(telephone, otpCode);
+
+    if (isValid) {
+      return { message: 'OTP verified successfully' };
+    } else {
+      return { message: 'Invalid OTP' };
+    }
   }
 }
