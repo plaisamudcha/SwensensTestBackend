@@ -8,6 +8,6 @@ import { AuthTokenService } from './services/auth-token.service';
 @Module({
   imports: [JwtModule.registerAsync(jwtModuleOptions)],
   providers: [BcryptService, SmsService, AuthTokenService],
-  exports: [BcryptService, SmsService]
+  exports: [BcryptService, SmsService, AuthTokenService]
 })
 export class SecurityModule {}

@@ -13,6 +13,7 @@ import { InvalidCredentialsException } from 'src/common/exceptions/invalid-crede
 import { AuthTokenService } from 'src/share/security/services/auth-token.service';
 import { EmailAlreadyException } from 'src/common/exceptions/email-already.exception';
 import { PhoneAlreadyException } from 'src/common/exceptions/phone-already.exception';
+import { InvalidOtpException } from 'src/common/exceptions/invalid-otp.exception';
 
 @Injectable()
 export class UserService {
@@ -118,19 +119,19 @@ export class UserService {
     return this.smsService.sendOtp(phoneNumber, otpCode);
   }
 
-  async verifyUserOtp(phoneNumber: string, otpCode: string): Promise<boolean> {
+  async verifyUserOtp(phoneNumber: string, otpCode: string): Promise<string> {
     const user = await this.getUserByPhoneNumber(phoneNumber);
 
     const isValid = user.otp === otpCode;
 
-    if (isValid) {
-      // ลบ OTP หลังจาก verify สำเร็จ
-      await this.prismaService.user.update({
-        where: { id: user.id },
-        data: { otp: null }
-      });
+    if (!isValid) {
+      throw new InvalidOtpException();
     }
 
-    return isValid;
+    const { id: sub, role } = user;
+
+    const accessToken = await this.authTokenService.signToken({ sub, role });
+
+    return accessToken;
   }
 }

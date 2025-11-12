@@ -1,13 +1,21 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { UserService } from './user.service';
 import { RegisterDto } from './dtos/register.dto';
-import { MessageResponse, SuccessResponse } from 'src/types/response.type';
+import {
+  MessageResponse,
+  SuccessResponse,
+  TokenResponse
+} from 'src/types/response.type';
 import { User } from 'generated/prisma';
 import { LoginPhoneDto, VerifyOtpDto } from './dtos/login-phone.dto';
+import { JwtConfigService } from 'src/config/services/jwt-config.service';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly jwtService: JwtConfigService
+  ) {}
 
   @Get()
   async getAllUsers(): Promise<SuccessResponse<User[]>> {
@@ -42,14 +50,12 @@ export class UserController {
   }
 
   @Post('verify-otp')
-  async verifyOtp(@Body() body: VerifyOtpDto): Promise<MessageResponse> {
+  async verifyOtp(@Body() body: VerifyOtpDto): Promise<TokenResponse> {
     const { telephone, otpCode } = body;
-    const isValid = await this.userService.verifyUserOtp(telephone, otpCode);
-
-    if (isValid) {
-      return { message: 'OTP verified successfully' };
-    } else {
-      return { message: 'Invalid OTP' };
-    }
+    const accessToken = await this.userService.verifyUserOtp(
+      telephone,
+      otpCode
+    );
+    return { accessToken };
   }
 }
