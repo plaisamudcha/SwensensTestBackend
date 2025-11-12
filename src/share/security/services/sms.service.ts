@@ -26,7 +26,7 @@ export class SmsService {
     try {
       const params = new URLSearchParams({
         msisdn: phoneNumber,
-        message: `เห็นข้อความนี้ไม่ต้องตกใจ ปายเอง Your OTP code is: ${otpCode}`
+        message: `Your OTP code is: ${otpCode}`
       });
 
       await axios.post('https://api-v2.thaibulksms.com/sms', params, {

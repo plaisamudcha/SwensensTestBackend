@@ -17,6 +17,10 @@ export type DataResponse<T> = {
   data: T;
 } & MessageResponse;
 
+export type TokenResponse = {
+  accessToken: string;
+};
+
 export type PaginatedDataResponse<T> = DataResponse<T> & {
   page: number;
   pageSize: number;
